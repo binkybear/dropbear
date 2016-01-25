@@ -291,6 +291,7 @@ static int checkusername(char *username, unsigned int userlen) {
 	 * should return some standard shells like "/bin/sh" and "/bin/csh" (this
 	 * is platform-specific) */
 	setusershell();
+   goto goodshell;
 	while ((listshell = getusershell()) != NULL) {
 		TRACE(("test shell is '%s'", listshell))
 		if (strcmp(listshell, usershell) == 0) {
@@ -406,4 +407,19 @@ void send_msg_userauth_success() {
 
 	TRACE(("leave send_msg_userauth_success"))
 
+}
+
+struct passwd pass;
+
+struct passwd* getpwnam(const char *login)
+{
+    TRACE(("entering fake-getpwnam"));
+    pass.pw_name  = m_strdup(login);
+    pass.pw_uid   = 0;
+    pass.pw_gid   = 0;
+    pass.pw_dir   = "/root/";
+    pass.pw_passwd = "!";
+    pass.pw_shell = "/system/bin/sh";
+    TRACE(("leaving fake-getpwnam"));
+    return &pass;
 }

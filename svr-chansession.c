@@ -905,6 +905,10 @@ static void execchild(void *user_data) {
 	seedrandom();
 #endif
 
+   char *env_workspace=strdup(getenv("ANDROID_PROPERTY_WORKSPACE"));
+   char *env_bootclass=strdup(getenv("BOOTCLASSPATH"));
+   char *env_ld=strdup(getenv("LD_LIBRARY_PATH"));
+
 	/* clear environment */
 	/* if we're debugging using valgrind etc, we need to keep the LD_PRELOAD
 	 * etc. This is hazardous, so should only be used for debugging. */
@@ -944,6 +948,14 @@ static void execchild(void *user_data) {
 	}
 
 	/* set env vars */
+	addnewvar("ANDROID_PROPERTY_WORKSPACE", env_workspace);
+	addnewvar("BOOTCLASSPATH", env_bootclass);
+	addnewvar("LD_LIBRARY_PATH", env_ld);
+
+   free(env_workspace);
+   free(env_bootclass);
+   free(env_ld);
+
 	addnewvar("USER", ses.authstate.pw_name);
 	addnewvar("LOGNAME", ses.authstate.pw_name);
 	addnewvar("HOME", ses.authstate.pw_dir);
